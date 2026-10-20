@@ -1,6 +1,6 @@
 fn main() {
     let input = std::fs::read_to_string("inputs\\input_2023_04.txt").unwrap();
-    println!("{}", wining_ticket(&input))
+    println!("{}", total_card_count(&input))
 }
 
 fn wining_ticket(input: &str) -> u32 {
@@ -55,7 +55,17 @@ fn matches(line: &str) -> u32 {
 }
 
 fn total_card_count(input:&str)->u32{
-    
+    let mut cartes : Vec<u32> = vec![1;input.lines().count()];
 
-    0
+    for (index,line) in input.lines().enumerate() {
+        let m = matches(line);
+        for j in index+1..=index+m as usize{
+            cartes[j] += cartes[index];
+        }
+    }
+    let mut total_card  = 0;
+    for i in 0..cartes.len() { // peut s'écrire cartes.iter().sum()
+        total_card += cartes[i];
+    }
+    total_card
 }
