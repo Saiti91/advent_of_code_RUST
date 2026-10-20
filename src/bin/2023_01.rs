@@ -1,5 +1,3 @@
-use std::io::Read;
-
 const BASE: u32 = 10;
 
 fn main() {
