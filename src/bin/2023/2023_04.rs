@@ -1,5 +1,5 @@
 fn main() {
-    let input = std::fs::read_to_string("inputs\\input_2023_04.txt").unwrap();
+    let input = std::fs::read_to_string("inputs\\2023\\input_2023_04.txt").unwrap();
     println!("{}", total_card_count(&input))
 }
 

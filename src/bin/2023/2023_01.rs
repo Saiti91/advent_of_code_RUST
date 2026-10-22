@@ -1,7 +1,7 @@
 const BASE: u32 = 10;
 
 fn main() {
-    let input = std::fs::read_to_string("inputs\\input_2023_01.txt").unwrap();
+    let input = std::fs::read_to_string("inputs\\2023\\input_2023_01.txt").unwrap();
     println!("{}", get_two_digit_code(input));
 
 }
