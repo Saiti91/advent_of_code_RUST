@@ -37,6 +37,16 @@ Get-Content inputs\input_2023_01.txt | cargo run --bin 2023_01
 ```
 (`<` ne marche pas dans PowerShell. Alternative : `cmd /c "cargo run --bin 2023_01 < inputs\input_2023_01.txt"`)
 
+- Toujours lancer `cargo run` depuis la **racine** du projet (sinon `NotFound` sur le fichier).
+- Les programmes sont rangés par année (`src/bin/2024/...`) : Cargo ne les trouve pas seul.
+  Pour chaque nouveau jour, ajouter dans `Cargo.toml` :
+  ```toml
+  [[bin]]
+  name = "2024_03"
+  path = "src/bin/2024/2024_03.rs"
+  ```
+  Sinon : `no targets specified in the manifest` ou `no bin target named ...`.
+
 ### Lire un fichier directement (entraînement seulement)
 ```rust
 let input = std::fs::read_to_string("inputs/input_2023_02.txt").unwrap();
@@ -118,6 +128,40 @@ let input = std::fs::read_to_string("inputs/input_2023_02.txt").unwrap();
   (`:` -> `;` -> `,` -> espace), un niveau = un découpage = une boucle (ou un `let`).
 - Déboguer un découpage : `println!("{:?}", morceau);` montre les espaces cachés.
 
+## 3 ter. Listes (`Vec`) et emprunts (vu en 2024-01 et 2024-02)
+
+| Outil | Effet |
+|---|---|
+| `let mut v: Vec<u32> = Vec::new();` | liste vide (`mut` pour pouvoir la remplir) |
+| `v.push(n);` | ajoute `n` à la fin (le nombre va **entre les parenthèses**) |
+| `v.len()` | taille, de type `usize` |
+| `v[i]` | élément à la position `i` (de `0` à `len() - 1`) |
+| `v.sort();` | trie la liste elle-même (croissant) |
+| `v.swap(i, j);` | échange deux cases |
+| `let mut c = v.clone();` | copie indépendante (l'original n'est pas touché) |
+| `c.remove(i);` | retire l'élément `i`, les suivants se décalent |
+| `a.abs_diff(b)` | écart positif entre deux `u32`, quel que soit l'ordre |
+
+**Passer une liste à une fonction :**
+- `fn f(v: Vec<u32>)` + `f(liste)` : la fonction **prend** la liste, elle est détruite à la fin
+  de `f` -> `liste` inutilisable après (`borrow of moved value`).
+- `fn f(v: &Vec<u32>)` + `f(&liste)` : **prêt en lecture** (ex. `is_croissant`).
+- `fn f(v: &mut Vec<u32>)` + `f(&mut liste)` : **prêt modifiable** (ex. une fonction de tri).
+
+**Soustractions en `u32` / `usize` :**
+- `petit - grand` **panique** (pas de négatif) -> `if a > b { a - b } else { b - a }` ou `abs_diff`.
+- `v.len() - 1` sur une liste vide panique -> `if v.len() < 2 { ... }` si une variante peut en donner.
+- `a > b && a - b <= 3` est sûr : le `&&` ne calcule la droite que si la gauche est vraie.
+
+**Tri à bulles** (pour comprendre ; aux épreuves, utiliser `sort()`) :
+```
+echange <- vrai
+TANT QUE echange :
+    echange <- faux                       (au début de CHAQUE passage)
+    POUR i de 0 à len-2 :
+        SI v[i] > v[i+1] : échanger, echange <- vrai
+```
+
 ## 4. Toute la bibliothèque standard est autorisée (confirmé par le prof)
 Seules les **crates extérieures** sont interdites (`regex`, `itertools`...).
 Donc utilisables aux deux épreuves, même si le cours ne les a pas encore détaillés :
@@ -159,6 +203,14 @@ Une variante peut mettre exprès ce genre de cas limite -> vérifier avant (`is_
 12. **Partie 2 : relire ce qui ne sert plus.** Ne pas recopier aveuglément la partie 1
     (limites, booléens, identifiants inutiles).
 13. **Reformuler l'énoncé en français** sur un exemple quand on ne le comprend pas.
+14. **Choisir la structure de données avant de coder** : deux colonnes à trier séparément
+    = deux `Vec`, pas un `Vec` de paires (2024-01).
+15. **Fonction « tout est valide » = `return false` dès la première erreur**, `true` à la fin
+    (plus besoin de variable booléenne ; une liste d'un seul élément est alors valide).
+16. **Partie 2 « on a droit à une erreur » : essayer toutes les possibilités.**
+    Pour chaque position, fabriquer une copie sans cet élément, la tester avec les fonctions
+    **inchangées** de la partie 1, `break` dès qu'une copie passe (sinon compté plusieurs fois).
+17. **Ne pas modifier une fonction qui marche** pour la partie 2 : ajouter la logique autour.
 
 ## 7. Pièges rencontrés
 - Variables déclarées hors de la boucle des lignes -> pas remises à zéro.

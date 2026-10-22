@@ -28,3 +28,11 @@ path = "src/bin/2023/2023_05.rs"
 [[bin]]
 name = "2024_01"
 path = "src/bin/2024/2024_01.rs"
+
+[[bin]]
+name = "2024_02"
+path = "src/bin/2024/2024_02.rs"
+
+[[bin]]
+name = "2024_02"
+path = "src/bin/2024/2024_03.rs"
