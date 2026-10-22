@@ -4,3 +4,27 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+
+[[bin]]
+name = "2023_01"
+path = "src/bin/2023/2023_01.rs"
+
+[[bin]]
+name = "2023_02"
+path = "src/bin/2023/2023_02.rs"
+
+[[bin]]
+name = "2023_03"
+path = "src/bin/2023/2023_03.rs"
+
+[[bin]]
+name = "2023_04"
+path = "src/bin/2023/2023_04.rs"
+
+[[bin]]
+name = "2023_05"
+path = "src/bin/2023/2023_05.rs"
+
+[[bin]]
+name = "2024_01"
+path = "src/bin/2024/2024_01.rs"
