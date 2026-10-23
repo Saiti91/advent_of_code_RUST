@@ -1,78 +1,76 @@
 fn main() {
-    let input = std::fs::read_to_string("inputs\\2024\\input_2024_03.txt").unwrap();
+    let input = std::fs::read_to_string("inputs\\2024\\input_2024_04.txt").unwrap();
     println!("{}", resoudre(input));
 }
 
+//resoudre(input) :
+//     grille <- liste vide
+//     pour chaque ligne de input :
+//         ajouter à grille la ligne transformée en liste de caractères
+//
+//     total <- 0
+//     pour i de 0 à nombre_de_lignes - 1 :
+//         pour j de 0 à nombre_de_colonnes - 1 :
+//             total <- total + compter_xmas(grille, i, j)
+//     renvoyer total
+//
 fn resoudre(input: String) -> u32 {
-    //  reste <- &line[i..]
-    //     si reste commence par "do()"         -> enable <- vrai
-    //     sinon si reste commence par "don't()" -> enable <- faux
-    //     sinon si enable                        -> total += check_rest(reste)
-    let mut total = 0;
-    let mut enable = true;
+    let mut grille: Vec<Vec<char>> = Vec::new();
     for line in input.lines() {
-        for (i, _) in line.char_indices() {
-            if line[i..].starts_with("do()") {
-                enable = true;
-            }
-            if line[i..].starts_with("don't()") {
-                enable = false
-            }
-            if enable {
-                total += check_rest(&line[i..], &mut enable);
-            }
+        grille.push(line.chars().collect());
+    }
+    let mut total = 0;
+
+    for i in 0..grille.len() - 1 {
+        for j in 0..grille.len() - 1 {
+            total += compter_xmas(&grille, i, j)
         }
     }
     total
 }
 
-fn check_rest(input: &str, enable: &mut bool) -> u32 {
-    let mut x: u32 = 0;
-    let mut y: u32 = 0;
 
-    //check_rest(reste) :
-    //     si reste ne commence pas par "mul(" -> 0
-    //     apres <- reste sans les 4 premiers caractères          (&reste[4..])
-    //     couper apres au premier ')' -> dedans                  (sinon -> 0)
-    //     couper dedans au premier ',' -> gauche, droite         (sinon -> 0)
-    //     si gauche et droite sont des nombres de 1 à 3 chiffres -> gauche * droite
-    //     sinon -> 0
+// compter_xmas(grille, i, j) :
+//     si grille[i][j] n'est pas 'X' -> renvoyer 0
+//
+//     mot <- ['X', 'M', 'A', 'S']
+//     directions <- [(-1,-1), (-1,0), (-1,1),
+//                    ( 0,-1),         ( 0,1),
+//                    ( 1,-1), ( 1,0), ( 1,1)]
+//     trouves <- 0
+//
+//     pour chaque (dl, dc) dans directions :
+//         // position de la 4e lettre
+//         l_fin <- i + 3*dl
+//         c_fin <- j + 3*dc
+//         si l_fin < 0 ou l_fin >= nombre_de_lignes
+//            ou c_fin < 0 ou c_fin >= nombre_de_colonnes :
+//             passer à la direction suivante
+//
+//         ok <- vrai
+//         pour k de 0 à 3 :
+//             si grille[i + k*dl][j + k*dc] != mot[k] :
+//                 ok <- faux
+//         si ok :
+//             trouves <- trouves + 1
+//
+//     renvoyer trouves
 
-    if !input.starts_with("mul(") {
-        return 0;
-    }
-    let tronc_input = &input[4..];
-
-    if !tronc_input.contains(')') {
-        return 0;
-    }
-    let (tronc_after_input, _) = tronc_input.split_once(')').unwrap();
-
-    if !tronc_after_input.contains(',') {
-        return 0;
-    }
-    let (gauche, droite) = tronc_after_input.split_once(',').unwrap();
-
-    //x <- 0
-    // pour chaque caractère c de gauche :
-    //     si c n'est pas un chiffre -> return 0
-    //     x <- x * 10 + valeur de c
-    if gauche.len() >= 1 && gauche.len() <= 3 {
-        for c in gauche.chars() {
-            if !c.is_ascii_digit() {
-                return 0;
-            }
-            x = x * 10 + c.to_digit(10).unwrap();
-        }
-    }
-    if droite.len() >= 1 && droite.len() <= 3 {
-        for c in droite.chars() {
-            if !c.is_ascii_digit() {
-                return 0;
-            }
-            y = y * 10 + c.to_digit(10).unwrap();
-        }
+fn compter_xmas(grille: &Vec<Vec<char>>, i: usize, j: usize) -> u32 {
+    if grille[i][j] != 'X' { return 0; }
+    let mot = ['X', 'M', 'A', 'S'];
+    let direction = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)];
+    let mut found =0;
+    //         pour chaque (dl, dc) dans directions :
+    //         // position de la 4e lettre
+    //         l_fin <- i + 3*dl
+    //         c_fin <- j + 3*dc
+    //         si l_fin < 0 ou l_fin >= nombre_de_lignes
+    //            ou c_fin < 0 ou c_fin >= nombre_de_colonnes :
+    //             passer à la direction suivante
+    for (l,c) in direction {
+        let l_fin = i+3;
     }
 
-    x * y
+    0
 }
