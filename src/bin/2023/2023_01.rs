@@ -42,7 +42,7 @@ fn get_two_digit_code(input: String) -> u32 {
     total
 }
 
-fn word_value(reste: &str) -> u32 {
+fn word_value(reste : &str) -> u32 {
     if reste.starts_with("one") {
         1
     } else if reste.starts_with("two") {
